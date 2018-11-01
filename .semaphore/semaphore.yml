@@ -8,16 +8,21 @@ agent:
 blocks:
   - name: Warm cache
     task:
+      env_vars:
+        - name: MAVEN_OPTS
+          value: "-Dmaven.repo.local=.m2"
       jobs:
         - name: Dependencies
           commands:
             - checkout
             - cache restore v1-maven-$(checksum pom.xml)
-            - mvn dependency:go-offline
-            - cache store v1-maven-$(checksum pom.xml) ~/.m2
-            - "false"
+            - mvn -q dependency:go-offline
+            - cache store v1-maven-$(checksum pom.xml) .m2
   - name: Tests
     task:
+      env_vars:
+        - name: MAVEN_OPTS
+          value: "-Dmaven.repo.local=.m2"
       prologue:
         commands:
           - checkout
