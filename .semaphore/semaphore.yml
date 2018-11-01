@@ -1,0 +1,27 @@
+version: v1.0
+name: Java & Spring Example
+agent:
+  machine:
+    type: e1-standard-2
+    os_image: ubuntu1804
+
+blocks:
+  - name: Warm cache
+    task:
+      jobs:
+        - name: Dependencies
+          commands:
+            - checkout
+            - cache restore v1-maven-$(checksum pom.xml)
+            - mvn dependency:go-offline
+            - cache store v1-maven-$(checksum pom.xml) ~/.m2
+  - name: Tests
+      prologue:
+        commands:
+          - checkout
+          - cache restore v1-maven-$(checksum pom.xml)
+          - sem-service start postgres
+      jobs:
+        - name: Everything
+          commands:
+            - mvn package
