@@ -15,9 +15,10 @@ blocks:
         - name: Dependencies
           commands:
             - checkout
-            - cache restore v2-maven-$(checksum pom.xml)
-            - mvn -q dependency:go-offline
-            - cache store v2-maven-$(checksum pom.xml) .m2
+            - cache restore v4-maven-$(checksum pom.xml)
+            - mvn -q dependency:go-offline test-compile
+            - cache store v4-maven-$(checksum pom.xml) .m2
+            - cache store v4-build-$SEMAPHORE_GIT_SHA target
   - name: Tests
     task:
       env_vars:
@@ -26,7 +27,8 @@ blocks:
       prologue:
         commands:
           - checkout
-          - cache restore v2-maven-$(checksum pom.xml)
+          - cache restore v4-maven-$(checksum pom.xml)
+          - cache restore v4-build-$SEMAPHORE_GIT_SHA
           - sem-service start postgres
       jobs:
         - name: Everything
