@@ -15,9 +15,9 @@ blocks:
         - name: Dependencies
           commands:
             - checkout
-            - cache restore v1-maven-$(checksum pom.xml)
+            - cache restore v2-maven-$(checksum pom.xml)
             - mvn -q dependency:go-offline
-            - cache store v1-maven-$(checksum pom.xml) .m2
+            - cache store v2-maven-$(checksum pom.xml) .m2
   - name: Tests
     task:
       env_vars:
@@ -26,7 +26,7 @@ blocks:
       prologue:
         commands:
           - checkout
-          - cache restore v1-maven-$(checksum pom.xml)
+          - cache restore v2-maven-$(checksum pom.xml)
           - sem-service start postgres
       jobs:
         - name: Everything
