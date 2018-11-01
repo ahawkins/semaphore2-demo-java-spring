@@ -15,6 +15,7 @@ blocks:
             - cache restore v1-maven-$(checksum pom.xml)
             - mvn dependency:go-offline
             - cache store v1-maven-$(checksum pom.xml) ~/.m2
+            - "false"
   - name: Tests
     task:
       prologue:
